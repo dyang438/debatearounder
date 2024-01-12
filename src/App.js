@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import GenerateRoomCodeButton from './generateRoomCodeButton'
+import RoomParent from "./roomParent";
 
 function App() {
 
@@ -14,7 +14,6 @@ function App() {
                   </p>
                   <img src={logo} className="App-logo" id = "left" alt="logo"/>
               </div>
-              <GenerateRoomCodeButton/>
               <a
                   id={"Form-Link"}
                   className="App-link"
@@ -24,6 +23,7 @@ function App() {
               >
                   Form
               </a>
+              <RoomParent/>
           </header>
       </div>
   );
