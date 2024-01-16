@@ -3,6 +3,17 @@
     font-family: "American Typewriter", serif;
     font-size: 40px;
 }
+#nameList {
+    padding: 24px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    align-items: center; /* Center align items */
+    gap: 20px; /* Space between elements */
+    padding: 20px;
+}
 
 .buttons {
     box-shadow:inset 0 1px 0 0 #fce2c1;
@@ -29,4 +40,30 @@
 #nameList {
     font-family: "American Typewriter", serif;
     padding: 10px;
+}
+
+.Room {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Create a responsive grid */
+    gap: 15px;
+    padding: 20px;
+
+}
+
+.setupButtons {
+    display: flex;
+    flex-direction: row; /* Place buttons in a row */
+    justify-content: center; /* Center buttons horizontally */
+    gap: 10px; /* Space between buttons */
+}
+
+.room {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.QRCode {
+    height: 200px;
 }

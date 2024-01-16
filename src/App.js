@@ -14,15 +14,7 @@ function App() {
                   </p>
                   <img src={logo} className="App-logo" id = "left" alt="logo"/>
               </div>
-              <a
-                  id={"Form-Link"}
-                  className="App-link"
-                  href="https://forms.gle/sVTvfBVW5aZqpv9fA"
-                  target="_blank"
-                  rel="noopener noreferrer"
-              >
-                  Form
-              </a>
+
               <RoomParent/>
           </header>
       </div>
