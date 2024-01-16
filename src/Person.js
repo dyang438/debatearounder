@@ -19,6 +19,17 @@ export default class Person {
     getSkill () {
         return this.skill;
     }
+    getSkillNumber () {
+        const skill = this.getSkill();
+        if (skill === "Advanced") {
+            return 2;
+        }
+        if (skill === "Adept") {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
     getStaying () {
         return this.stayingCanDebate;
     }

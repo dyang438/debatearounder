@@ -121,20 +121,15 @@ export default function RoomParent () {
                 if (add) {
                     names.push(string);
                 }
-                console.log(names);
 
             }
 
             function deleteNamesFromList (personName) {
                 for (let i = 0; i < parsedRoomData.length; i++) {
-                    console.log("here")
-                    console.log(personName)
-                    console.log(parsedRoomData[i][2])
                     if (parsedRoomData[i][2] === personName) {
                         deletedRows.push(i);
                     }
                 }
-                console.log(deletedRows);
                 FetchCSVData();
             }
 
@@ -250,9 +245,9 @@ export default function RoomParent () {
                     eitherArr.push(leftoverArr[i]);
                 }
             }
-            if(numberOfJudgesToAdd < judgeArr.length) {
-                shuffledArr = shuffleArray(judgesArr);
-            } else if (numberOfJudgesToAdd < (judgeArr.length + eitherArr.length)) {
+            if(numberOfJudgesToAdd <= judgeArr.length) {
+                shuffledArr = shuffleArray(judgeArr);
+            } else if (numberOfJudgesToAdd <= (judgeArr.length + eitherArr.length)) {
                 numberOfJudgesToAdd = numberOfJudgesToAdd - judgeArr.length;
                 //either is potArr, completely add judge
                 judgesArr = judgesArr.concat(judgeArr);
@@ -267,7 +262,6 @@ export default function RoomParent () {
             }
 
             judgesArr = judgesArr.concat(shuffledArr.slice(0, numberOfJudgesToAdd));
-
             let leftoverArrWithoutJudges = [];
 
             for (let x = 0; x < leftoverArr.length; x++) {
@@ -277,6 +271,11 @@ export default function RoomParent () {
             }
 
             function randomizingAndCreatingPartnerships (leftoverArr) {
+                leftoverArr.sort((a, b) => {
+                    return a.getSkillNumber() - b.getSkillNumber();
+                    //DEFINITELY SORTS IN PRIORITY OF OCCURRENCE IN ARRAY, NOT A BIG DEAL THOUGH
+                });
+
                 let buildArr = []
                 for (let i = 0; i < leftoverArr.length; i = i+2) {
                     if (i+1 === leftoverArr.length) {

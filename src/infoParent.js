@@ -20,6 +20,7 @@ export default function InfoParent () {
                 <p>2. Everyone participating should scan the QR code and fill out the resulting form with the generated QR Code</p>
                 <p>3. Make sure by showing and refreshing names everyone is present! </p>
                 <p>4. Generate rooms and regenerate until satisfied.</p>
+                <p> IMPORTANT: IF YOU WANT TO TEST HOW IT WORKS MANUALLY INPUT ROOM CODE 10. </p>
                 <p>Promised future features: Specific pro/con pairs, brushing up this god-awful UI, and judges assigned to rooms directly.</p>
             </div>
         )
