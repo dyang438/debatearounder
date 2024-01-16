@@ -57,6 +57,10 @@
     gap: 10px; /* Space between buttons */
 }
 
+.rooms {
+    font-family: "American Typewriter", serif;
+}
+
 .room {
     border: 1px solid #ccc;
     padding: 10px;

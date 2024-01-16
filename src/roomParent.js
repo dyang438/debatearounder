@@ -290,7 +290,6 @@ export default function RoomParent () {
 
         }
 
-
         return (
             <div>
                 {roomCodeGenerated &&
@@ -311,8 +310,10 @@ export default function RoomParent () {
                 <GenerateRoomCodeButton/>
                 <ShowRoomButton/>
             </div>
+            <div className="rooms">
+                <GenerateRoomButton/>
+            </div>
 
-            <GenerateRoomButton/>
         </div>
     )
 }
