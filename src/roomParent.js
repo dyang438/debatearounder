@@ -9,7 +9,7 @@ import QRCode from './QRCode.svg'
 
 export default function RoomParent () {
     const [roomData, setRoomData] = useState([]);
-    const [names, setNames] = useState([]);
+    const [namesDisplay, setNamesDisplay] = useState([]);
     const [code, setCode] = useState();
     const [showNamesOrRefresh, setShowNamesOrRefresh] = useState("Show Names:")
     const [roomCodeGenerated, setRoomCodeGenerated] = useState(false);
@@ -18,6 +18,7 @@ export default function RoomParent () {
     const [judgesDisplay, setJudgesDisplay] = useState(null);
     const [generateButtonText, setGenerateButtonText] = useState("Generate This Room:")
     const [generatedRooms, setGeneratedRooms] = useState(false);
+    const [deletedRows] = useState([]);
     function GenerateRoomCodeButton() {
 
 
@@ -27,8 +28,7 @@ export default function RoomParent () {
          * @returns {number}
          */
         function roomCodeGenerationFunction() {
-            return 111111;
-            //return Math.floor(Math.random()*900000+100000);
+            return Math.floor(Math.random()*900000+100000);
         }
 
         //Possible improvements include making a probing function so there is no repeated room codes.
@@ -42,8 +42,23 @@ export default function RoomParent () {
 
         return (
             <div className={"generateRoomCodeButton"} >
-                <button className="buttons" onClick={generateRoom} > Room Code: </button>
+                <button className="buttons" id = "roomCodeButton" onClick={generateRoom} > Room Code: </button>
                 <div id="roomCode">{code}</div>
+            </div>
+        )
+    }
+
+    function ChangeRoomCodeButton () {
+
+        function changeCode () {
+            let x = document.getElementById("codeInput").value;
+            setCode(x);
+        }
+
+        return (
+            <div className="changeRoomCodeButton">
+                {roomCodeGenerated && <button id="changeRoomCodeButton" className="buttons" onClick={changeCode}> Change Code Manually:</button>}
+                {roomCodeGenerated && <input id="codeInput" type="number"/>}
             </div>
         )
     }
@@ -87,26 +102,59 @@ export default function RoomParent () {
 
         }
 
-        function showNames(parsedData) {
+        function showNames(parsedRoomData) {
             const names = [];
-            for (let i = 0; i < parsedData.length; i++) {
-                const string = parsedData[i][2];
-                if (i < parsedData.length-1) {
-                    names.push(string + ", ");
+            for (let i = 0; i < parsedRoomData.length; i++) {
+                const string = parsedRoomData[i][2];
+                let add = true;
+                if (deletedRows.includes(i)) {
+                    add = false;
                 }
-                else {
+                if (add) {
+                    for (let j = i + 1; j < parsedRoomData.length; j++) {
+                        if (parsedRoomData[i][2] === parsedRoomData[j][2]) {
+                            //if a more recent copy exists in the room don't add it
+                            add = false;
+                        }
+                    }
+                }
+                if (add) {
                     names.push(string);
                 }
+                console.log(names);
+
             }
 
-            setNames(names);
+            function deleteNamesFromList (personName) {
+                for (let i = 0; i < parsedRoomData.length; i++) {
+                    console.log("here")
+                    console.log(personName)
+                    console.log(parsedRoomData[i][2])
+                    if (parsedRoomData[i][2] === personName) {
+                        deletedRows.push(i);
+                    }
+                }
+                console.log(deletedRows);
+                FetchCSVData();
+            }
+
+            setNamesDisplay(
+                names.map((personName, nameIndex) => (
+                    <div className="namesListDisplay" key={`name-${nameIndex}`}>
+                        <button className="namesDisplay" onClick={() => deleteNamesFromList(personName)}>
+                            {personName}
+                        </button>
+                    </div>
+            )));
             setShowNamesOrRefresh("Refresh Names:");
         }
+
+
 
         return (
             <div>
                 {roomCodeGenerated && <button className="buttons" onClick={FetchCSVData} > {showNamesOrRefresh} </button>}
-                <div className="names" id="nameList">{names}</div>
+                <div className="names" id="nameList">{namesDisplay}</div>
                 {/**<div id="info">{info}</div>**/}
             </div>
         )
@@ -122,6 +170,7 @@ export default function RoomParent () {
         let [judgesArr] = useState([]);
         let [allRoomsArr] = useState([]);
 
+
         function generatePartnershipsAndJudgesFromCSVData () {
             setGenerateButtonText("Regenerate Rooms:");
             setGeneratedRooms(true);
@@ -129,16 +178,31 @@ export default function RoomParent () {
             judgesArr = [];
             let stayingArr = [];
             for (let i = 0; i < roomData.length; i++) {
-                const person = new Person(
-                    roomData[i][2], //name
-                    roomData[i][3], //skill
-                    roomData[i][5], //staying
-                    roomData[i][6], //preference
-                    roomData[i][4]) //partner
-                if (roomData[i][5] === "No") {
-                    judgesArr.push(person);
-                } else {
-                    stayingArr.push(person);
+                let add = true;
+                if (deletedRows.includes(i)) {
+                    add = false;
+                }
+                if (add) {
+                    for (let j = i + 1; j < roomData.length; j++) {
+                        if (roomData[i][2] === roomData[j][2]) {
+                            //if a more recent copy exists in the room don't add it
+                            add = false;
+                        }
+                    }
+                }
+                if (add) {
+                    const person = new Person(
+                        roomData[i][2], //name
+                        roomData[i][3], //skill
+                        roomData[i][5], //staying
+                        roomData[i][6], //preference
+                        roomData[i][4] //partner
+                    )
+                    if (roomData[i][5] === "No") {
+                        judgesArr.push(person);
+                    } else {
+                        stayingArr.push(person);
+                    }
                 }
             }
 
@@ -148,6 +212,9 @@ export default function RoomParent () {
 
             let roomDataRemaining = [];
             let leftoverArr = [];
+            if (numStaying === 0) {
+                return;
+            }
             //Partner Check
             for (let i = 0; i < stayingArr.length-1; i++) {
                 for (let j = i + 1; j < stayingArr.length; j++) {
@@ -157,11 +224,6 @@ export default function RoomParent () {
                         //Create partner object and move to storage bin.
                         const partnership = new Partner(stayingArr[i], stayingArr[j]);
                         partnershipsArr.push(partnership);
-                        console.log(partnership);
-                        console.log(stayingArr[i]);
-                        console.log(i);
-                        console.log(stayingArr[j]);
-                        console.log(j);
                         roomDataRemaining[i] = "checked";
                         roomDataRemaining[j] = "checked";
                     }
@@ -171,16 +233,10 @@ export default function RoomParent () {
                     roomDataRemaining[i] = "checked";
                 }
             }
-            console.log(partnershipsArr);
-            console.log(roomDataRemaining);
             if (roomDataRemaining[stayingArr.length-1] !== "checked") {
                 leftoverArr.push(stayingArr[stayingArr.length-1]);
                 roomDataRemaining[stayingArr.length-1] = "checked";
             }
-
-            console.log("leftoverArr")
-            console.log(leftoverArr);
-
             let shuffledArr;
             let judgeArr = [];
             let eitherArr = [];
@@ -211,8 +267,6 @@ export default function RoomParent () {
             }
 
             judgesArr = judgesArr.concat(shuffledArr.slice(0, numberOfJudgesToAdd));
-            console.log(leftoverArr)
-            console.log(judgesArr);
 
             let leftoverArrWithoutJudges = [];
 
@@ -221,9 +275,6 @@ export default function RoomParent () {
                     leftoverArrWithoutJudges.push(leftoverArr[x]);
                 }
             }
-
-            console.log(leftoverArrWithoutJudges)
-
 
             function randomizingAndCreatingPartnerships (leftoverArr) {
                 let buildArr = []
@@ -238,7 +289,6 @@ export default function RoomParent () {
             }
 
             partnershipsArr = partnershipsArr.concat(randomizingAndCreatingPartnerships(leftoverArrWithoutJudges))
-            console.log(partnershipsArr)
             generateRooms();
         }
 
@@ -268,25 +318,29 @@ export default function RoomParent () {
                 console.error("Partnerships Formed Improperly, Retry");
             }
 
-            setRoomsDisplay(allRoomsArr.map((room, roomIndex) => (
-                <div key={`room-${roomIndex}`} className = "room">
-                    <h3>Room {roomIndex + 1}</h3>
-                    {/* Display partnerships */}
-                    {room.getPartnerships().map((partnership, partnershipIndex) => (
-                        <div key={`partnership-${partnershipIndex}`} >
-                            <div>{partnership.getNameOne()}, {partnership.getNameTwo()}</div>
+            setRoomsDisplay(
+                <div className="room-container">
+                    {allRoomsArr.map((room, roomIndex) => (
+                        <div key={`room-${roomIndex}`} className="room">
+                            <h3>Room {roomIndex + 1}</h3>
+                            {room.getPartnerships().map((partnership, partnershipIndex) => (
+                                <div key={`partnership-${partnershipIndex}`} className="partnership">
+                                    <div>{partnership.getNameOne()}, {partnership.getNameTwo()}</div>
+                                </div>
+                            ))}
                         </div>
                     ))}
                 </div>
-            )));
-            console.log(judgesArr);
+            );
             setJudgesDisplay(
-                judgesArr.map((judge, judgeIndex) => (
-                <div key={`judge-${judgeIndex}`}>
-                    <div>{judge.getName()}</div>
-                </div>
 
-            )))
+
+                judgesArr.map((judge, judgeIndex) => (
+                    <div key={`judge-${judgeIndex}`}>
+                        <div>{judge.getName()}</div>
+                    </div>
+                )
+            ))
 
         }
 
@@ -308,10 +362,15 @@ export default function RoomParent () {
             <div className="setupButtons">
                 <img className="QRCode" src={QRCode} alt={"Form QR Code"}/>
                 <GenerateRoomCodeButton/>
+            </div>
+            <div>
                 <ShowRoomButton/>
             </div>
             <div className="rooms">
                 <GenerateRoomButton/>
+            </div>
+            <div>
+                <ChangeRoomCodeButton/>
             </div>
 
         </div>

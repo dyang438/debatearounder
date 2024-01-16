@@ -1,10 +1,96 @@
+/*
+
+ROOM CODE:
+*/
+
+/* Styling for the container holding all rooms */
+.room-container {
+    font-family: "American Typewriter", serif;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between room tiles */
+    justify-content: center; /* Center the tiles */
+    padding: 20px;
+}
+
+/* Styling for individual room tiles */
+.room {
+    display: flex;
+    flex-direction: column; /* Stack elements vertically within each room */
+    align-items: center; /* Center align items within each room */
+    gap: 10px; /* Space between elements in the room */
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-width: 400px; /* Minimum width for each room tile */
+}
+
+/* Styling for each partnership in a room */
+.partnership {
+    background: #ad440c linear-gradient(to bottom, #d06519 5%, #c41147 100%);
+
+    padding: 8px;
+    border-radius: 4px;
+    width: 100%; /* Full width within the room tile */
+    text-align: center; /* Center text */
+}
+
+/*
+
+Rest of the code
+ */
 #roomCode {
     padding: 10px;
     font-family: "American Typewriter", serif;
     font-size: 40px;
 }
-#nameList {
-    padding: 24px;
+
+.changeRoomCodeButton {
+    padding: 10px;
+
+
+}
+
+.namesListDisplay {
+    padding: 5px;
+    display: inline-grid;
+    height: 40px;
+}
+
+.namesDisplay {
+    box-shadow: 3px 4px 0px 0px #8a2a21;
+    background-color:transparent;
+    border-radius:18px;
+    border:1px solid #d02718;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    font-family: "American Typewriter", serif;
+    font-weight: normal;
+    font-size:20px;
+    padding:7px 25px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #810e05;
+}
+
+.namesDisplay:hover {
+    background: #e34e44 linear-gradient(to bottom, #e34e44 5%, #db5c53 100%);
+
+}
+.namesDisplay:active {
+    position:relative;
+    top:1px;
+}
+
+#codeInput {
+    font-family: "American Typewriter", serif;
+    color: #ffffff;
+    font-size: 40px;
+    padding: 10px;
+    background-color: #5c1010;
+    border-color: #ffc477;
+    width: 300px;
 }
 
 .main {
@@ -17,7 +103,7 @@
 
 .buttons {
     box-shadow:inset 0 1px 0 0 #fce2c1;
-    background: #ffc477 linear-gradient(to bottom, #ffc477 5%, #fb9e25 100%);
+    background: #e3a528 linear-gradient(to bottom, #dc9842 5%, #f8950e 100%);
     border-radius:6px;
     border:1px solid #eeb44f;
     display:inline-block;
@@ -42,32 +128,46 @@
     padding: 10px;
 }
 
-.Room {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Create a responsive grid */
-    gap: 15px;
-    padding: 20px;
-
-}
-
 .setupButtons {
+    gap:30px;
     display: flex;
-    flex-direction: row; /* Place buttons in a row */
-    justify-content: center; /* Center buttons horizontally */
-    gap: 10px; /* Space between buttons */
-}
-
-.rooms {
-    font-family: "American Typewriter", serif;
-}
-
-.room {
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    justify-content: space-between;
 }
 
 .QRCode {
     height: 200px;
+}
+
+.info {
+    font-size: 22px;
+    font-family: "American Typewriter", serif;
+}
+
+.infoButton {
+    box-shadow:inset 0px 1px 0px 0px #efdcfb;
+    background:linear-gradient(to bottom, #7441dc 5%, #44199a 100%);
+    background-color:#dfbdfa;
+    border-radius:6px;
+    border:1px solid #c584f3;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    font-family:Arial;
+    font-size:15px;
+    font-weight:bold;
+    padding:6px 24px;
+    text-decoration:none;
+    text-shadow:0px 1px 0px #9752cc;
+}
+.infoButton:hover {
+    background:linear-gradient(to bottom, #bc80ea 5%, #dfbdfa 100%);
+    background-color:#bc80ea;
+}
+.infoButton:active {
+    position:relative;
+    top:1px;
+}
+
+.infoParent {
+    position: relative;
 }

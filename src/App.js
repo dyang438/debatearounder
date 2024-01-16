@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import RoomParent from "./roomParent";
+import InfoParent from "./infoParent";
 
 function App() {
 
@@ -14,8 +15,8 @@ function App() {
                   </p>
                   <img src={logo} className="App-logo" id = "left" alt="logo"/>
               </div>
-
               <RoomParent/>
+              <InfoParent/>
           </header>
       </div>
   );
