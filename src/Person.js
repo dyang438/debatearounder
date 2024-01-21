@@ -16,6 +16,9 @@ export default class Person {
     getName () {
         return this.personName;
     }
+    setName (newName) {
+        this.personName = newName;
+    }
     getSkill () {
         return this.skill;
     }

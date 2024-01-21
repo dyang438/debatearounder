@@ -1,8 +1,3 @@
-/*
-
-ROOM CODE:
-*/
-
 /* Styling for the container holding all rooms */
 .room-container {
     font-family: "American Typewriter", serif;
@@ -16,28 +11,36 @@ ROOM CODE:
 /* Styling for individual room tiles */
 .room {
     display: flex;
-    flex-direction: column; /* Stack elements vertically within each room */
+    flex-direction: row; /* Stack elements vertically within each room */
     align-items: center; /* Center align items within each room */
     gap: 10px; /* Space between elements in the room */
     border: 1px solid #ccc;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    min-width: 400px; /* Minimum width for each room tile */
+    min-width: 500px; /* Minimum width for each room tile */
 }
 
 /* Styling for each partnership in a room */
-.partnership {
+.roomButtons {
     background: #ad440c linear-gradient(to bottom, #d06519 5%, #c41147 100%);
-
     padding: 8px;
     border-radius: 4px;
     width: 100%; /* Full width within the room tile */
     text-align: center; /* Center text */
 }
 
-/*
+.partnerships {
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
 
+/* Judges List */
+.judgeList {
+    display: inline-flex
+}
+
+/*
 Rest of the code
  */
 #roomCode {
@@ -48,8 +51,6 @@ Rest of the code
 
 .changeRoomCodeButton {
     padding: 10px;
-
-
 }
 
 .namesListDisplay {

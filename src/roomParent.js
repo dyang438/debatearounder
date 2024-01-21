@@ -19,6 +19,7 @@ export default function RoomParent () {
     const [generateButtonText, setGenerateButtonText] = useState("Generate This Room:")
     const [generatedRooms, setGeneratedRooms] = useState(false);
     const [deletedRows] = useState([]);
+    const [toggledButtons, setToggledButtons] = useState([]);
     function GenerateRoomCodeButton() {
 
 
@@ -143,8 +144,6 @@ export default function RoomParent () {
             )));
             setShowNamesOrRefresh("Refresh Names:");
         }
-
-
 
         return (
             <div>
@@ -292,55 +291,132 @@ export default function RoomParent () {
         }
 
         function generateRooms() {
-            //Sorting so rooms can have best skill distributions
-            partnershipsArr.sort((a, b) => {
-               return a.calcSkill() - b.calcSkill();
-            });
-            const numPartners = partnershipsArr.length
-            if (numPartners % 4 === 2) {
-                //Make 4 people room first
-                let fourPlayerArr = shuffleArray(partnershipsArr.slice(0, 2));
-                allRoomsArr.push( new FourPersonRoom(fourPlayerArr[0], fourPlayerArr[1]));
-                //Then make the rest of the rooms
-                for (let i = 2; i < partnershipsArr.length; i = i+4) {
-                    //Assign each group of four into a room randomly.
-                    let roomInput = shuffleArray(partnershipsArr.slice(i, i+4));
-                    allRoomsArr.push( new EightPersonRoom(roomInput[0], roomInput[1], roomInput[2], roomInput[3]));
+
+            function setupRooms() {
+                //Sorting so rooms can have best skill distributions
+                partnershipsArr.sort((a, b) => {
+                    return a.calcSkill() - b.calcSkill();
+                });
+                const numPartners = partnershipsArr.length
+                if (numPartners % 4 === 2) {
+                    //Make 4 people room first
+                    let fourPlayerArr = shuffleArray(partnershipsArr.slice(0, 2));
+                    allRoomsArr.push( new FourPersonRoom(fourPlayerArr[0], fourPlayerArr[1]));
+                    //Then make the rest of the rooms
+                    for (let i = 2; i < partnershipsArr.length; i = i+4) {
+                        //Assign each group of four into a room randomly.
+                        let roomInput = shuffleArray(partnershipsArr.slice(i, i+4));
+                        allRoomsArr.push( new EightPersonRoom(roomInput[0], roomInput[1], roomInput[2], roomInput[3]));
+                    }
+                } else if (numPartners % 4 === 0) {
+                    for (let i = 0; i < partnershipsArr.length; i = i+4) {
+                        //Assign each group of four into a room randomly.
+                        let roomInput = shuffleArray(partnershipsArr.slice(i, i+4));
+                        allRoomsArr.push( new EightPersonRoom(roomInput[0], roomInput[1], roomInput[2], roomInput[3]));
+                    }
+                } else {
+                    console.error("Partnerships Formed Improperly, Retry");
                 }
-            } else if (numPartners % 4 === 0) {
-                for (let i = 0; i < partnershipsArr.length; i = i+4) {
-                    //Assign each group of four into a room randomly.
-                    let roomInput = shuffleArray(partnershipsArr.slice(i, i+4));
-                    allRoomsArr.push( new EightPersonRoom(roomInput[0], roomInput[1], roomInput[2], roomInput[3]));
-                }
-            } else {
-                console.error("Partnerships Formed Improperly, Retry");
             }
 
-            setRoomsDisplay(
-                <div className="room-container">
-                    {allRoomsArr.map((room, roomIndex) => (
-                        <div key={`room-${roomIndex}`} className="room">
-                            <h3>Room {roomIndex + 1}</h3>
-                            {room.getPartnerships().map((partnership, partnershipIndex) => (
-                                <div key={`partnership-${partnershipIndex}`} className="partnership">
-                                    <div>{partnership.getNameOne()}, {partnership.getNameTwo()}</div>
-                                </div>
-                            ))}
+
+            function switchToggle (personName) {
+                setToggledButtons(prev => {
+                    const newToggled = prev.includes(personName) ? prev.filter(name => name !== personName) : [...prev, personName];
+                    if (newToggled.length === 2) {
+                        swapData(newToggled);
+                        return []
+                    }
+                    return newToggled
+                });
+
+            }
+
+            function swapData (toggledArr) {
+                let swapped = false;
+                for (let room of allRoomsArr) {
+                    const partnerships = room.getPartnerships();
+                    for (let partnership of partnerships) {
+                        if (partnership.getNameOne() === toggledArr[0] || partnership.getNameOne() === toggledArr[1]) {
+                            partnership.setNameOne(toggledArr[0] === partnership.getNameOne() ? toggledArr[1] : toggledArr[0]);
+                            swapped = true;
+                            break;
+                        }
+                        if (partnership.getNameTwo() === toggledArr[0] || partnership.getNameTwo() === toggledArr[1]) {
+                            partnership.setNameTwo(toggledArr[0] === partnership.getNameTwo() ? toggledArr[1] : toggledArr[0]);
+                            swapped = true;
+                            break;
+                        }
+                    }
+                    if (swapped) break;
+                }
+
+                // Update the display after swapping
+                if (swapped) updateRoomDisplay();
+
+            }
+
+            function PartnershipComponent ({partnership, index}) {
+                function teamName (index) {
+                    if (index === 0) {
+                        return "OG"
+                    }
+                    if (index === 1) {
+                        return "CG"
+                    }
+                    if (index === 2) {
+                        return "OO"
+                    }
+                    if (index === 3) {
+                        return "CO"
+                    }
+                    console.error("problem deciding teams")
+                }
+
+                return (
+                    <div>
+                        {teamName(index)}
+                        <div>
+                            <PlayerRoomButton playerName={partnership.getNameOne()} onToggle={switchToggle}/>
+                            <PlayerRoomButton playerName={partnership.getNameTwo()} onToggle={switchToggle}/>
                         </div>
-                    ))}
-                </div>
-            );
-            setJudgesDisplay(
-
-
-                judgesArr.map((judge, judgeIndex) => (
-                    <div key={`judge-${judgeIndex}`}>
-                        <div>{judge.getName()}</div>
                     </div>
                 )
-            ))
+            }
 
+            function PlayerRoomButton({playerName, onToggle}) {
+                return (
+                    <button className="roomButtons" onClick={() => onToggle(playerName)}>
+                        {playerName}
+                    </button>
+                )
+            }
+
+            function updateRoomDisplay (){
+                setRoomsDisplay(
+                    <div className="room-container">
+                        {allRoomsArr.map((room, roomIndex) => (
+                            <div key={`room-${roomIndex}`} className="room">
+                                <h3>Room {roomIndex + 1}</h3>
+                                {room.getPartnerships().map((partnership, partnershipIndex) => (
+                                    <div key={`partnership-${partnershipIndex}`} className="partnership" >
+                                        <PartnershipComponent partnership={partnership} index={partnershipIndex}/>
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                );
+                setJudgesDisplay(
+                    judgesArr.map((judge, judgeIndex) => (
+                            <div className="judgeList" key={`judge-${judgeIndex}`}>
+                                <div >{judge.getName()}, </div>
+                            </div>
+                        )
+                    ))
+            }
+            setupRooms();
+            updateRoomDisplay();
         }
 
         return (
