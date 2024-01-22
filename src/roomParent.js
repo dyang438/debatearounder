@@ -13,13 +13,12 @@ export default function RoomParent () {
     const [code, setCode] = useState();
     const [showNamesOrRefresh, setShowNamesOrRefresh] = useState("Show Names:")
     const [roomCodeGenerated, setRoomCodeGenerated] = useState(false);
-    //const [info, setInfo] = useState();
     const [roomsDisplay, setRoomsDisplay] = useState(null);
     const [judgesDisplay, setJudgesDisplay] = useState(null);
     const [generateButtonText, setGenerateButtonText] = useState("Generate This Room:")
     const [generatedRooms, setGeneratedRooms] = useState(false);
     const [deletedRows] = useState([]);
-    const [toggledButtons, setToggledButtons] = useState([]);
+
     function GenerateRoomCodeButton() {
 
 
@@ -159,12 +158,10 @@ export default function RoomParent () {
     }
 
     function GenerateRoomButton () {
-
         let [partnershipsArr] = useState([]);
         let [judgesArr] = useState([]);
         let [allRoomsArr] = useState([]);
-
-
+        let [toggledButtons] = useState([]);
         function generatePartnershipsAndJudgesFromCSVData () {
             setGenerateButtonText("Regenerate Rooms:");
             setGeneratedRooms(true);
@@ -289,9 +286,7 @@ export default function RoomParent () {
             partnershipsArr = partnershipsArr.concat(randomizingAndCreatingPartnerships(leftoverArrWithoutJudges))
             generateRooms();
         }
-
         function generateRooms() {
-
             function setupRooms() {
                 //Sorting so rooms can have best skill distributions
                 partnershipsArr.sort((a, b) => {
@@ -318,42 +313,61 @@ export default function RoomParent () {
                     console.error("Partnerships Formed Improperly, Retry");
                 }
             }
-
-
-            function switchToggle (personName) {
-                setToggledButtons(prev => {
-                    const newToggled = prev.includes(personName) ? prev.filter(name => name !== personName) : [...prev, personName];
-                    if (newToggled.length === 2) {
-                        swapData(newToggled);
-                        return []
-                    }
-                    return newToggled
-                });
-
+            function switchToggle(personName) {
+                const newToggled = toggledButtons.includes(personName) ? toggledButtons.filter(name => name !== personName) : [...toggledButtons, personName];
+                toggledButtons = (newToggled.length === 2 ? swapData(newToggled) : newToggled);
             }
 
-            function swapData (toggledArr) {
+            function swapData(toggledArr) {
+                let swapObjects = new Map();
                 let swapped = false;
-                for (let room of allRoomsArr) {
-                    const partnerships = room.getPartnerships();
-                    for (let partnership of partnerships) {
-                        if (partnership.getNameOne() === toggledArr[0] || partnership.getNameOne() === toggledArr[1]) {
-                            partnership.setNameOne(toggledArr[0] === partnership.getNameOne() ? toggledArr[1] : toggledArr[0]);
-                            swapped = true;
-                            break;
-                        }
-                        if (partnership.getNameTwo() === toggledArr[0] || partnership.getNameTwo() === toggledArr[1]) {
-                            partnership.setNameTwo(toggledArr[0] === partnership.getNameTwo() ? toggledArr[1] : toggledArr[0]);
-                            swapped = true;
-                            break;
-                        }
-                    }
-                    if (swapped) break;
+
+                // Load objects for swapping
+                allRoomsArr.forEach(room => {
+                    room.getPartnerships().forEach(partnership => {
+                        swapObjects.set(partnership.getNameOne(), partnership.getPersonOne());
+                        swapObjects.set(partnership.getNameTwo(), partnership.getPersonTwo());
+                    });
+                });
+
+                // Perform swap if both objects are found
+                if (swapObjects.has(toggledArr[0]) && swapObjects.has(toggledArr[1])) {
+                    const obj1 = deepClone(swapObjects.get(toggledArr[0])); // Deep clone of object
+                    const obj2 = deepClone(swapObjects.get(toggledArr[1])); // Deep clone of object
+
+                    allRoomsArr.forEach(room => {
+                        room.getPartnerships().forEach(partnership => {
+                            if (partnership.getPersonOne() === swapObjects.get(toggledArr[0])) {
+                                partnership.setPersonOne(obj2);
+                                swapped = true;
+                            } else if (partnership.getPersonOne() === swapObjects.get(toggledArr[1])) {
+                                partnership.setPersonOne(obj1);
+                                swapped = true;
+                            }
+                            if (partnership.getPersonTwo() === swapObjects.get(toggledArr[0])) {
+                                partnership.setPersonTwo(obj2);
+                                swapped = true;
+                            } else if (partnership.getPersonTwo() === swapObjects.get(toggledArr[1])) {
+                                partnership.setPersonTwo(obj1);
+                                swapped = true;
+                            }
+                        });
+                    });
+                } else {
+                    console.error("swap not called correctly");
                 }
 
-                // Update the display after swapping
-                if (swapped) updateRoomDisplay();
+                if (!swapped) {
+                    console.error("swap not effective");
+                }
 
+                updateRoomDisplay();
+                return [];
+            }
+
+            // Utility function for deep cloning
+            function deepClone(obj) {
+                return new Person(obj.getName(), obj.getSkill(), obj.getStaying(), obj.getStaying(), obj.getPartner());
             }
 
             function PartnershipComponent ({partnership, index}) {
@@ -391,8 +405,7 @@ export default function RoomParent () {
                     </button>
                 )
             }
-
-            function updateRoomDisplay (){
+            function updateRoomDisplay () {
                 setRoomsDisplay(
                     <div className="room-container">
                         {allRoomsArr.map((room, roomIndex) => (
@@ -408,13 +421,15 @@ export default function RoomParent () {
                     </div>
                 );
                 setJudgesDisplay(
-                    judgesArr.map((judge, judgeIndex) => (
+                    judgesArr.map((judge, judgeIndex) =>
+                        (
                             <div className="judgeList" key={`judge-${judgeIndex}`}>
-                                <div >{judge.getName()}, </div>
+                                <div > {judge.getName().toString()}  </div>
                             </div>
                         )
                     ))
             }
+
             setupRooms();
             updateRoomDisplay();
         }
@@ -424,7 +439,7 @@ export default function RoomParent () {
                 {roomCodeGenerated &&
                     <button className="buttons" onClick={generatePartnershipsAndJudgesFromCSVData}> {generateButtonText} </button>}
                 {generatedRooms &&
-                    <div>Judges: </div>}
+                    <div className="judgeList" id = "judgesListName">Judges: </div>}
                 {judgesDisplay}
                 {roomsDisplay}
             </div>

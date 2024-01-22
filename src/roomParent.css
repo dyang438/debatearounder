@@ -10,24 +10,54 @@
 
 /* Styling for individual room tiles */
 .room {
+    color:#d9bc33;
     display: flex;
     flex-direction: row; /* Stack elements vertically within each room */
     align-items: center; /* Center align items within each room */
     gap: 10px; /* Space between elements in the room */
-    border: 1px solid #ccc;
+    border: 1px solid #d9bc33;
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     min-width: 500px; /* Minimum width for each room tile */
 }
 
+
 /* Styling for each partnership in a room */
 .roomButtons {
-    background: #ad440c linear-gradient(to bottom, #d06519 5%, #c41147 100%);
-    padding: 8px;
-    border-radius: 4px;
+    box-shadow: 3px 4px 0 0 #8a2a21;
+    color: white;
+    font-size: 24px;
+    padding: 10px;
+    border-radius:18px;
+    border:1px solid #d02718;
     width: 100%; /* Full width within the room tile */
     text-align: center; /* Center text */
+    margin: 3px;
+    text-shadow:0 1px 0 #810e05;
+    background-color: rgba(122, 5, 5, 0.7);
+    font-family: "American Typewriter", serif;
+    font-weight: normal;
+}
+
+.roomButtonsToggled {
+    box-shadow: 3px 4px 0 0 #8a2a21;
+    color: white;
+    font-size: 24px;
+    padding: 10px;
+    border-radius:18px;
+    border:1px solid #d02718;
+    width: 100%; /* Full width within the room tile */
+    text-align: center; /* Center text */
+    margin: 3px;
+    text-shadow:0 1px 0 #810e05;
+    background: #e34e44 linear-gradient(to bottom, #e34e44 5%, #db5c53 100%);
+    font-family: "American Typewriter", serif;
+    font-weight: normal;
+}
+
+.roomButtons:hover {
+    background: #e34e44 linear-gradient(to bottom, #e34e44 5%, #db5c53 100%);
 }
 
 .partnerships {
@@ -36,8 +66,14 @@
 }
 
 /* Judges List */
+#judgesListName {
+    color: #d9bc33;
+    font-weight: bold;
+}
+
 .judgeList {
-    display: inline-flex
+    display: block;
+    font-family: "American Typewriter", serif;
 }
 
 /*
@@ -61,7 +97,7 @@ Rest of the code
 
 .namesDisplay {
     box-shadow: 3px 4px 0 0 #8a2a21;
-    background-color:transparent;
+    background-color: rgba(122, 5, 5, 0.7);
     border-radius:18px;
     border:1px solid #d02718;
     display:inline-block;
@@ -104,7 +140,7 @@ Rest of the code
 
 .buttons {
     box-shadow:inset 0 1px 0 0 #fce2c1;
-    background: #e3a528 linear-gradient(to bottom, #dc9842 5%, #f8950e 100%);
+    background: #d2aa4b linear-gradient(to bottom, #da9134 5%, #d27f09 100%);
     border-radius:6px;
     border:1px solid #eeb44f;
     display:inline-block;
@@ -145,10 +181,10 @@ Rest of the code
 }
 
 .infoButton {
-    box-shadow:inset 0 1px 0 0 #efdcfb;
-    background: #dfbdfa linear-gradient(to bottom, #7441dc 5%, #44199a 100%);
-    border-radius:6px;
-    border:1px solid #c584f3;
+    box-shadow:inset 0 1px 0 0 #fce2c1;
+    background: #d2aa4b linear-gradient(to bottom, #da9134 5%, #d27f09 100%);
+    border-radius:4px;
+    border:1px solid #eeb44f;
     display:inline-block;
     cursor:pointer;
     color:#ffffff;
@@ -157,7 +193,7 @@ Rest of the code
     font-weight:bold;
     padding:6px 24px;
     text-decoration:none;
-    text-shadow:0 1px 0 #9752cc;
+    text-shadow:0 1px 0 #cc9f52;
 }
 .infoButton:hover {
     background: #bc80ea linear-gradient(to bottom, #bc80ea 5%, #dfbdfa 100%);
@@ -169,4 +205,7 @@ Rest of the code
 
 .infoParent {
     position: relative;
+}
+#mailLink {
+    color: #61dafb;
 }

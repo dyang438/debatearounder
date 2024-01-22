@@ -15,5 +15,4 @@ export default class EightPersonRoom {
         return [this.pairOne, this.pairTwo, this.pairThree, this.pairFour];
     }
 
-
 }
