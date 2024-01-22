@@ -5,19 +5,27 @@ export default class Partner {
         this.personTwo = personTwo;
     }
 
+    getPersonOne () {
+        return this.personOne;
+    }
+
+    getPersonTwo () {
+        return this.personTwo;
+    }
+
     getNameOne () {
         return this.personOne.getName();
     }
 
-    setNameOne (newName) {
-        this.personOne.setName(newName)
+    setPersonOne (newPerson) {
+        this.personOne = newPerson
     }
 
     getNameTwo () {
         return this.personTwo.getName();
     }
-    setNameTwo (newName) {
-        this.personTwo.setName(newName)
+    setPersonTwo (newPerson) {
+        this.personTwo = newPerson
     }
     getSkillOne () {
         const skill = this.personOne.getSkill();
