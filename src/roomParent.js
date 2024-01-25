@@ -27,7 +27,7 @@ export default function RoomParent () {
          *
          * @returns {number}
          */
-        function roomCodeGenerationFunction() {
+        const roomCodeGenerationFunction = () => {
             return Math.floor(Math.random()*900000+100000);
         }
 
@@ -267,10 +267,31 @@ export default function RoomParent () {
             }
 
             function randomizingAndCreatingPartnerships (leftoverArr) {
-                leftoverArr.sort((a, b) => {
-                    return a.getSkillNumber() - b.getSkillNumber();
-                    //DEFINITELY SORTS IN PRIORITY OF OCCURRENCE IN ARRAY, NOT A BIG DEAL THOUGH
-                });
+                const arrangeArrayBySkill = (leftoverArr) => {
+                    let noviceArr = []
+                    let intermediateArr = []
+                    let advancedArr = []
+                    leftoverArr.forEach(person => {
+                        let skillNumber = person.getSkillNumber()
+                        switch (skillNumber) {
+                            case 0:
+                                noviceArr.push(person);
+                                break;
+                            case 1:
+                                intermediateArr.push(person);
+                                break;
+                            case 2:
+                                advancedArr.push(person);
+                                break;
+                        }
+                    });
+                    shuffleArray(noviceArr);
+                    shuffleArray(intermediateArr);
+                    shuffleArray(advancedArr);
+                    return noviceArr.concat(intermediateArr).concat(advancedArr)
+                }
+
+                leftoverArr = arrangeArrayBySkill(leftoverArr);
 
                 let buildArr = []
                 for (let i = 0; i < leftoverArr.length; i = i+2) {
@@ -325,8 +346,8 @@ export default function RoomParent () {
                 // Load objects for swapping
                 allRoomsArr.forEach(room => {
                     room.getPartnerships().forEach(partnership => {
-                        swapObjects.set(partnership.getNameOne(), partnership.getPersonOne());
-                        swapObjects.set(partnership.getNameTwo(), partnership.getPersonTwo());
+                        swapObjects.set(partnership.getNameOne(), partnership.personOne);
+                        swapObjects.set(partnership.getNameTwo(), partnership.personTwo);
                     });
                 });
 
@@ -337,18 +358,18 @@ export default function RoomParent () {
 
                     allRoomsArr.forEach(room => {
                         room.getPartnerships().forEach(partnership => {
-                            if (partnership.getPersonOne() === swapObjects.get(toggledArr[0])) {
-                                partnership.setPersonOne(obj2);
+                            if (partnership.personOne === swapObjects.get(toggledArr[0])) {
+                                partnership.personOne = obj2;
                                 swapped = true;
-                            } else if (partnership.getPersonOne() === swapObjects.get(toggledArr[1])) {
-                                partnership.setPersonOne(obj1);
+                            } else if (partnership.personOne === swapObjects.get(toggledArr[1])) {
+                                partnership.personOne = obj1;
                                 swapped = true;
                             }
-                            if (partnership.getPersonTwo() === swapObjects.get(toggledArr[0])) {
-                                partnership.setPersonTwo(obj2);
+                            if (partnership.personTwo === swapObjects.get(toggledArr[0])) {
+                                partnership.personTwo = obj2;
                                 swapped = true;
-                            } else if (partnership.getPersonTwo() === swapObjects.get(toggledArr[1])) {
-                                partnership.setPersonTwo(obj1);
+                            } else if (partnership.personTwo === swapObjects.get(toggledArr[1])) {
+                                partnership.personTwo = obj1;
                                 swapped = true;
                             }
                         });
@@ -367,7 +388,7 @@ export default function RoomParent () {
 
             // Utility function for deep cloning
             function deepClone(obj) {
-                return new Person(obj.getName(), obj.getSkill(), obj.getStaying(), obj.getStaying(), obj.getPartner());
+                return new Person(obj.getName(), obj.getSkill(), obj.getDebateJudgePreference(), obj.getStaying(), obj.getPartner());
             }
 
             function PartnershipComponent ({partnership, index}) {
