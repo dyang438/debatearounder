@@ -283,6 +283,8 @@ export default function RoomParent () {
                             case 2:
                                 advancedArr.push(person);
                                 break;
+                            default:
+                                console.error("skill bypassed skillCheck")
                         }
                     });
                     shuffleArray(noviceArr);
